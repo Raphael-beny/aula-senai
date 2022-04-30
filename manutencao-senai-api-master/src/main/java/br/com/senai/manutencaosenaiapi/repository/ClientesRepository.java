@@ -6,17 +6,17 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import br.com.senai.manutencaosenaiapi.entity.Peca;
+import br.com.senai.manutencaosenaiapi.entity.Cliente;
 
 @Repository
-public interface PecasRepository extends 
-		JpaRepository<Peca, Integer>{
+public interface ClientesRepository extends 
+		JpaRepository<Cliente, Integer>{
 	
 	@Query(value = 
-			"SELECT p "
-			+ "FROM Peca p "
-			+ "WHERE Upper(p.descricao) LIKE Upper(:descricao) ")
-	List<Peca> listarPor(String descricao);
+			"SELECT c "
+			+ "FROM Cliente c "
+			+ "WHERE Upper(c.nome) LIKE Upper(:nome) ")
+	List<Cliente> listarPor(String nome);
 	
 	
 
