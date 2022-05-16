@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import br.com.senai.manutencaosenaiapi.entity.Peca;
 import br.com.senai.manutencaosenaiapi.entity.TipoDePeca;
 import br.com.senai.manutencaosenaiapi.service.PecaService;
+import br.com.senai.manutencaosenaiapi.service.TiposDePecaService;
 
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
@@ -19,7 +20,6 @@ import javax.swing.JTextField;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.List;
 import java.awt.event.ActionEvent;
 import javax.swing.JTextArea;
@@ -38,6 +38,9 @@ public class TelaCadastroDePecas extends JFrame {
 	
 	@Autowired
 	private TelaDeConsultaDeTipoDePeca telaDeConsultaDeTipoDePeca;
+	
+	@Autowired
+	private TiposDePecaService tiposDePecaService;
 	
 	@Autowired
 	private PecaService service;
@@ -78,6 +81,7 @@ public class TelaCadastroDePecas extends JFrame {
 						pecaSalva.setDescricao(tfDescricao.getText());
 						pecaSalva.setQtdeEmEstoque(Integer.parseInt(tfQtd.getText()));
 						pecaSalva.setEspecificacoes(txtEspecificacoes.getText());
+						pecaSalva.setTipo((TipoDePeca) jComboBox.getSelectedItem());
 						pecaSalva.setId(Integer.parseInt(tfId.getText()));
 						service.alterar(pecaSalva);
 						JOptionPane.showMessageDialog(btnSalvar, "Peça alterada com sucesso!");
@@ -86,6 +90,7 @@ public class TelaCadastroDePecas extends JFrame {
 						peca.setDescricao(tfDescricao.getText());
 						peca.setQtdeEmEstoque(Integer.parseInt(tfQtd.getText()));
 						peca.setEspecificacoes(txtEspecificacoes.getText());
+						peca.setTipo((TipoDePeca) jComboBox.getSelectedItem());
 						Peca pecaSalva = service.inserir(peca);
 						JOptionPane.showMessageDialog(btnSalvar, "Peça salva com sucesso!");
 						tfId.setText(pecaSalva.getId().toString());
@@ -112,6 +117,8 @@ public class TelaCadastroDePecas extends JFrame {
 		
 		JLabel lblTipo = new JLabel("Tipo");
 		
+		jComboBox = new JComboBox<>();
+		
 		JButton btnSelecTipo = new JButton("Gerenciar Tipos");
 		btnSelecTipo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -119,9 +126,6 @@ public class TelaCadastroDePecas extends JFrame {
 				telaDeConsultaDeTipoDePeca.setLocationRelativeTo(null);
 			}
 		});
-		
-		@SuppressWarnings("unused")
-		JComboBox<TipoDePeca> comboBoxTipos = criarCombo();
 		
 		GroupLayout gl_contentPane = new GroupLayout(contentPane);
 		gl_contentPane.setHorizontalGroup(
@@ -190,18 +194,6 @@ public class TelaCadastroDePecas extends JFrame {
 		);
 		contentPane.setLayout(gl_contentPane);
 	}
-	
-	public JComboBox<TipoDePeca> criarCombo() {
-		List<TipoDePeca> tipos = new ArrayList<>();
-		TipoDePeca tipo = new TipoDePeca();
-		tipo.setDescricao("teste");
-		tipos.add(tipo);
-		jComboBox = new JComboBox<>();
-		tipos.forEach(t -> {
-			jComboBox.addItem(t);
-		});
-		return jComboBox;
-	}
 
 	public void colocarEmEdicao(Peca pecaSalva) {
 		tfId.setText(pecaSalva.getId().toString());
@@ -209,4 +201,12 @@ public class TelaCadastroDePecas extends JFrame {
 		txtEspecificacoes.setText(pecaSalva.getEspecificacoes());
 		tfQtd.setText(pecaSalva.getQtdeEmEstoque().toString());
 	}
+	
+	public void listarTipos() {
+		List<TipoDePeca> tiposEncontrados = tiposDePecaService.listarTodos();
+		tiposEncontrados.forEach(tipo -> {
+			jComboBox.addItem(tipo);
+		});
+	}
+	
 }

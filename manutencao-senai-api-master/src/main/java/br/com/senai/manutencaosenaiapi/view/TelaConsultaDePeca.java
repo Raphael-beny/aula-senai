@@ -41,7 +41,7 @@ public class TelaConsultaDePeca extends JFrame {
 	
 	@Autowired
 	private PecaService service;
-
+	
 	public TelaConsultaDePeca() {
 		setTitle("Tela de consulta de Peças");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -78,6 +78,7 @@ public class TelaConsultaDePeca extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				telaCadastroDePecas.setVisible(true);
 				telaCadastroDePecas.setLocationRelativeTo(null);
+				telaCadastroDePecas.listarTipos();
 			}
 		});
 		table = new JTable();
@@ -127,23 +128,31 @@ public class TelaConsultaDePeca extends JFrame {
 		JButton btnEditar = new JButton("Editar");
 		btnEditar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				int linhaSelecionada = table.getSelectedRow();
-				PecaTableModel model = (PecaTableModel) table.getModel();
-				Peca pecaSelecionada = model.getPor(linhaSelecionada);
-				telaCadastroDePecas.colocarEmEdicao(pecaSelecionada);
-				telaCadastroDePecas.setVisible(true);
-				setVisible(false);
+				try {
+					int linhaSelecionada = table.getSelectedRow();
+					PecaTableModel model = (PecaTableModel) table.getModel();
+					Peca pecaSelecionada = model.getPor(linhaSelecionada);
+					telaCadastroDePecas.colocarEmEdicao(pecaSelecionada);
+					telaCadastroDePecas.setVisible(true);
+					telaCadastroDePecas.listarTipos();
+				} catch (Exception e2) {
+					JOptionPane.showMessageDialog(btnEditar, "Selecione uma peça para editar");
+				}
 			}
 		});
 		
 		JButton btnExcluir = new JButton("Excluir");
 		btnExcluir.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				int linhaSelecionada = table.getSelectedRow();
-				PecaTableModel model = (PecaTableModel) table.getModel();
-				Peca pecaSelecionada = model.getPor(linhaSelecionada);
-				service.removerPor(pecaSelecionada.getId());
-				JOptionPane.showMessageDialog(btnExcluir, "Peça excluida com sucesso!");
+				try {
+					int linhaSelecionada = table.getSelectedRow();
+					PecaTableModel model = (PecaTableModel) table.getModel();
+					Peca pecaSelecionada = model.getPor(linhaSelecionada);
+					service.removerPor(pecaSelecionada.getId());
+					JOptionPane.showMessageDialog(btnExcluir, "Peça excluida com sucesso!");
+				} catch (Exception e2) {
+					JOptionPane.showMessageDialog(btnEditar, "Selecione uma peça para excluir");
+				}
 			}
 		});
 		GroupLayout gl_panel = new GroupLayout(panel);
@@ -168,4 +177,5 @@ public class TelaConsultaDePeca extends JFrame {
 		panel.setLayout(gl_panel);
 		contentPane.setLayout(gl_contentPane);
 	}
+	
 }

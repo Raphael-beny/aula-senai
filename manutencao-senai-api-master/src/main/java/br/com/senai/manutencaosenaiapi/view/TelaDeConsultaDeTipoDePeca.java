@@ -84,23 +84,31 @@ public class TelaDeConsultaDeTipoDePeca extends JFrame {
 		JButton btnEditar = new JButton("Editar");
 		btnEditar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				int linhaSelecionada = table.getSelectedRow();
-				TipoDePecaTableModel model = (TipoDePecaTableModel) table.getModel();
-				TipoDePeca tipoSelecionado = model.getPor(linhaSelecionada);
-				telaDeCadastroDeTipoDePeca.colocarEmEdicao(tipoSelecionado);
-				telaDeCadastroDeTipoDePeca.setVisible(true);
-				setVisible(false);
+				try {
+					int linhaSelecionada = table.getSelectedRow();
+					TipoDePecaTableModel model = (TipoDePecaTableModel) table.getModel();
+					TipoDePeca tipoSelecionado = model.getPor(linhaSelecionada);
+					telaDeCadastroDeTipoDePeca.colocarEmEdicao(tipoSelecionado);
+					telaDeCadastroDeTipoDePeca.setVisible(true);
+					setVisible(false);
+				} catch (Exception e2) {
+					JOptionPane.showMessageDialog(btnEditar, "Selecione um tipo para editar");
+				}
 			}
 		});
 		
 		JButton btnExcluir = new JButton("Excluir");
 		btnExcluir.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				int linhaSelecionada = table.getSelectedRow();
-				TipoDePecaTableModel model = (TipoDePecaTableModel) table.getModel();
-				TipoDePeca tipoSelecionado = model.getPor(linhaSelecionada);
-				service.removerPor(tipoSelecionado.getId());
-				JOptionPane.showMessageDialog(btnExcluir, "Tipo de peça excluida com sucesso!");
+				try {
+					int linhaSelecionada = table.getSelectedRow();
+					TipoDePecaTableModel model = (TipoDePecaTableModel) table.getModel();
+					TipoDePeca tipoSelecionado = model.getPor(linhaSelecionada);
+					service.removerPor(tipoSelecionado.getId());
+					JOptionPane.showMessageDialog(btnExcluir, "Tipo de peça excluida com sucesso!");
+				} catch (Exception e2) {
+					JOptionPane.showMessageDialog(btnEditar, "Selecione um tipo para editar");
+				}
 			}
 		});
 		GroupLayout gl_panel = new GroupLayout(panel);

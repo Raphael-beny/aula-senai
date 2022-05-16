@@ -82,6 +82,8 @@ public class TelaDeCadastroDeTipoDePeca extends JFrame {
 		btnNewButton_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				setVisible(false);
+				limpar();
+				dispose();
 			}
 		});
 		GroupLayout gl_contentPane = new GroupLayout(contentPane);
@@ -127,5 +129,10 @@ public class TelaDeCadastroDeTipoDePeca extends JFrame {
 	public void colocarEmEdicao(TipoDePeca tipoSelecionado) {
 		txtId.setText(tipoSelecionado.getId().toString());
 		txtDescricao.setText(tipoSelecionado.getDescricao());		
+	}
+	
+	public void limpar() {
+		txtId.setText(null);
+		txtDescricao.setText(null);		
 	}
 }
