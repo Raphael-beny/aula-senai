@@ -38,7 +38,6 @@ public class TelaConsultaDePeca extends JFrame {
 	
 	@Autowired
 	private TelaCadastroDePecas telaCadastroDePecas;
-
 	
 	@Autowired
 	private PecaService service;
@@ -59,14 +58,18 @@ public class TelaConsultaDePeca extends JFrame {
 		JButton btnPesquisar = new JButton("Pesquisar");
 		btnPesquisar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				List<Peca> pecasEncontradas = service.listarPor(txtFiltro.getText());
-				PecaTableModel model = new PecaTableModel(pecasEncontradas);
-				table.setModel(model);
-				TableColumnModel cm = table.getColumnModel();
-				cm.getColumn(0).setPreferredWidth(50);
-				cm.getColumn(1).setPreferredWidth(500);
-				cm.getColumn(2).setPreferredWidth(50);
-				table.updateUI();
+				try {
+					List<Peca> pecasEncontradas = service.listarPor(txtFiltro.getText());
+					PecaTableModel model = new PecaTableModel(pecasEncontradas);
+					table.setModel(model);
+					TableColumnModel cm = table.getColumnModel();
+					cm.getColumn(0).setPreferredWidth(50);
+					cm.getColumn(1).setPreferredWidth(500);
+					cm.getColumn(2).setPreferredWidth(50);
+					table.updateUI();
+				}catch (Exception ex) {
+					JOptionPane.showMessageDialog(btnPesquisar, ex.getMessage());
+				}
 			}
 		});
 		
@@ -75,7 +78,6 @@ public class TelaConsultaDePeca extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				telaCadastroDePecas.setVisible(true);
 				telaCadastroDePecas.setLocationRelativeTo(null);
-				setVisible(false);
 			}
 		});
 		table = new JTable();

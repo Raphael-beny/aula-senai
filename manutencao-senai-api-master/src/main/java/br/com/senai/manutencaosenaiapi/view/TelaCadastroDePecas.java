@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import br.com.senai.manutencaosenaiapi.entity.Peca;
+import br.com.senai.manutencaosenaiapi.entity.TipoDePeca;
 import br.com.senai.manutencaosenaiapi.service.PecaService;
 
 import javax.swing.GroupLayout;
@@ -18,8 +19,11 @@ import javax.swing.JTextField;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 import java.awt.event.ActionEvent;
 import javax.swing.JTextArea;
+import javax.swing.JComboBox;
 
 @Component
 public class TelaCadastroDePecas extends JFrame {
@@ -33,17 +37,18 @@ public class TelaCadastroDePecas extends JFrame {
 	private JTextArea txtEspecificacoes;
 	
 	@Autowired
+	private TelaDeConsultaDeTipoDePeca telaDeConsultaDeTipoDePeca;
+	
+	@Autowired
 	private PecaService service;
 	private JLabel lblQtd;
 	private JTextField tfQtd;
+	private JComboBox<TipoDePeca> jComboBox;
 
-	/**
-	 * Create the frame.
-	 */
 	public TelaCadastroDePecas() {
 		setTitle("Cadastro de peças");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 571, 296);
+		setBounds(100, 100, 571, 460);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -86,10 +91,6 @@ public class TelaCadastroDePecas extends JFrame {
 						tfId.setText(pecaSalva.getId().toString());
 					}
 					
-					
-					
-					
-					
 				} catch (Exception ex) {
 					JOptionPane.showMessageDialog(btnSalvar, ex.getMessage());
 				}
@@ -100,8 +101,7 @@ public class TelaCadastroDePecas extends JFrame {
 		btnNewButton = new JButton("Voltar");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-//				telaConsultaDePeca.setVisible(true);
-//				setVisible(false);
+				setVisible(false);
 			}
 		});
 		
@@ -110,6 +110,18 @@ public class TelaCadastroDePecas extends JFrame {
 		tfQtd = new JTextField();
 		tfQtd.setColumns(10);
 		
+		JLabel lblTipo = new JLabel("Tipo");
+		
+		JButton btnSelecTipo = new JButton("Gerenciar Tipos");
+		btnSelecTipo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				telaDeConsultaDeTipoDePeca.setVisible(true);
+				telaDeConsultaDeTipoDePeca.setLocationRelativeTo(null);
+			}
+		});
+		
+		@SuppressWarnings("unused")
+		JComboBox<TipoDePeca> comboBoxTipos = criarCombo();
 		
 		GroupLayout gl_contentPane = new GroupLayout(contentPane);
 		gl_contentPane.setHorizontalGroup(
@@ -117,25 +129,30 @@ public class TelaCadastroDePecas extends JFrame {
 				.addGroup(gl_contentPane.createSequentialGroup()
 					.addContainerGap()
 					.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
-						.addComponent(lblEspecificacoes)
 						.addGroup(Alignment.TRAILING, gl_contentPane.createSequentialGroup()
 							.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
-								.addComponent(lblId)
-								.addComponent(tfId, GroupLayout.PREFERRED_SIZE, 45, GroupLayout.PREFERRED_SIZE)
-								.addComponent(btnNewButton))
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addGroup(gl_contentPane.createParallelGroup(Alignment.TRAILING)
-								.addGroup(Alignment.LEADING, gl_contentPane.createSequentialGroup()
-									.addComponent(lblDescricao, GroupLayout.PREFERRED_SIZE, 74, GroupLayout.PREFERRED_SIZE)
-									.addPreferredGap(ComponentPlacement.RELATED, 261, Short.MAX_VALUE)
-									.addComponent(lblQtd)
-									.addGap(46))
-								.addGroup(Alignment.LEADING, gl_contentPane.createSequentialGroup()
-									.addComponent(tfDescricao, GroupLayout.PREFERRED_SIZE, 298, GroupLayout.PREFERRED_SIZE)
-									.addPreferredGap(ComponentPlacement.RELATED, 34, Short.MAX_VALUE)
-									.addComponent(tfQtd, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-								.addComponent(btnSalvar)))
-						.addComponent(txtEspecificacoes, GroupLayout.PREFERRED_SIZE, 519, GroupLayout.PREFERRED_SIZE))
+								.addGroup(gl_contentPane.createSequentialGroup()
+									.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
+										.addComponent(lblId)
+										.addComponent(tfId, GroupLayout.PREFERRED_SIZE, 45, GroupLayout.PREFERRED_SIZE))
+									.addGap(34)
+									.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
+										.addComponent(lblDescricao, GroupLayout.PREFERRED_SIZE, 74, GroupLayout.PREFERRED_SIZE)
+										.addComponent(tfDescricao, GroupLayout.PREFERRED_SIZE, 298, GroupLayout.PREFERRED_SIZE)))
+								.addComponent(jComboBox, 0, 377, Short.MAX_VALUE))
+							.addPreferredGap(ComponentPlacement.UNRELATED)
+							.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
+								.addComponent(lblQtd)
+								.addGroup(gl_contentPane.createParallelGroup(Alignment.TRAILING)
+									.addComponent(btnSelecTipo)
+									.addComponent(tfQtd, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
+							.addGap(41))
+						.addComponent(lblTipo, GroupLayout.PREFERRED_SIZE, 45, GroupLayout.PREFERRED_SIZE)
+						.addComponent(lblEspecificacoes)
+						.addGroup(gl_contentPane.createParallelGroup(Alignment.TRAILING)
+							.addComponent(btnSalvar)
+							.addComponent(txtEspecificacoes, GroupLayout.PREFERRED_SIZE, 519, GroupLayout.PREFERRED_SIZE))
+						.addComponent(btnNewButton))
 					.addContainerGap())
 		);
 		gl_contentPane.setVerticalGroup(
@@ -155,19 +172,37 @@ public class TelaCadastroDePecas extends JFrame {
 							.addComponent(lblId)
 							.addGap(6)
 							.addComponent(tfId, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
-					.addGap(18)
-					.addComponent(lblEspecificacoes)
+					.addGap(32)
+					.addComponent(lblTipo)
 					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(txtEspecificacoes, GroupLayout.PREFERRED_SIZE, 98, GroupLayout.PREFERRED_SIZE)
-					.addPreferredGap(ComponentPlacement.RELATED, 9, Short.MAX_VALUE)
 					.addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE)
-						.addComponent(btnNewButton)
-						.addComponent(btnSalvar))
+						.addComponent(btnSelecTipo)
+						.addComponent(jComboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+					.addGap(43)
+					.addComponent(lblEspecificacoes)
+					.addGap(12)
+					.addComponent(txtEspecificacoes, GroupLayout.PREFERRED_SIZE, 98, GroupLayout.PREFERRED_SIZE)
+					.addGap(16)
+					.addComponent(btnSalvar)
+					.addGap(22)
+					.addComponent(btnNewButton)
 					.addContainerGap())
 		);
 		contentPane.setLayout(gl_contentPane);
 	}
 	
+	public JComboBox<TipoDePeca> criarCombo() {
+		List<TipoDePeca> tipos = new ArrayList<>();
+		TipoDePeca tipo = new TipoDePeca();
+		tipo.setDescricao("teste");
+		tipos.add(tipo);
+		jComboBox = new JComboBox<>();
+		tipos.forEach(t -> {
+			jComboBox.addItem(t);
+		});
+		return jComboBox;
+	}
+
 	public void colocarEmEdicao(Peca pecaSalva) {
 		tfId.setText(pecaSalva.getId().toString());
 		tfDescricao.setText(pecaSalva.getDescricao());
