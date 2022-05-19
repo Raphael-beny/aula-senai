@@ -13,7 +13,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Entity(name = "TipoDePeca")
-@Table(name = "tipos_de_peca")
+@Table(name = "tipos_pecas")
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class TipoDePeca {
